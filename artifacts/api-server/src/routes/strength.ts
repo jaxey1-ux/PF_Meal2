@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router } from "express";
 import {
   AnalyzeFitnessScreenshotBody,
   AnalyzeFitnessScreenshotResponse,
@@ -6,7 +6,7 @@ import {
   GenerateStrengthPlanResponse,
 } from "@workspace/api-zod";
 
-const router: IRouter = Router();
+const router = Router();
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-5";
 
