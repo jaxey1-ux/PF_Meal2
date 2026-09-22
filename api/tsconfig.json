@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "typeRoots": ["../artifacts/api-server/node_modules/@types"],
+    "types": ["node"]
+  },
+  "include": [
+    "./**/*.ts",
+    "../artifacts/api-server/src/**/*.ts",
+    "../lib/api-zod/src/**/*.ts"
+  ]
+}
