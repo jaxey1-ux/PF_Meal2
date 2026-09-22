@@ -1,4 +1,8 @@
-import { Router } from "express";
+import {
+  Router,
+  type Request as ExpressRequest,
+  type Response as ExpressResponse,
+} from "express";
 import {
   AnalyzeFitnessScreenshotBody,
   AnalyzeFitnessScreenshotResponse,
@@ -106,7 +110,7 @@ function publicError(status: number): string {
 
 router.post(
   "/strength/analyze",
-  async (req, res): Promise<void> => {
+  async (req: ExpressRequest, res: ExpressResponse): Promise<void> => {
     const parsed = AnalyzeFitnessScreenshotBody.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ error: "Choose a valid image and try again." });
@@ -206,7 +210,9 @@ Use high confidence only when text is read clearly. Use low when interpretation 
   },
 );
 
-router.post("/strength/plan", async (req, res): Promise<void> => {
+router.post(
+  "/strength/plan",
+  async (req: ExpressRequest, res: ExpressResponse): Promise<void> => {
   const parsed = GenerateStrengthPlanBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({
@@ -270,6 +276,7 @@ Requirements:
       .status(status === 429 ? 429 : status === 504 ? 504 : 500)
       .json({ error: publicError(status) });
   }
-});
+  },
+);
 
 export default router;
