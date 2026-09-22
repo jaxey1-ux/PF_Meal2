@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "noCheck": true,
     "noEmit": true,
     "typeRoots": ["../artifacts/api-server/node_modules/@types"],
     "types": ["node"]
