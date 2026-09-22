@@ -1,3 +1,3 @@
-import app from "../../artifacts/api-server/src/app";
+import { handlePlan } from "../_shared";
 
-export default app;
+export default handlePlan;

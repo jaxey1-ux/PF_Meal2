@@ -1,3 +1,3 @@
-import app from "../../artifacts/api-server/src/app";
+import { handleAnalyze } from "../_shared";
 
-export default app;
+export default handleAnalyze;
