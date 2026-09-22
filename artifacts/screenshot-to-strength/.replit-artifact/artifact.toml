@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Screenshot to Strength"
+description = "A mobile-first Planet Fitness experience that reads activity screenshots, lets people confirm the detected metrics, and creates a welcoming strength and eating guidance plan that complements their current routine."
+version = "1.0.0"
+id = "artifacts/screenshot-to-strength"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23459
+
+[services.development]
+run = "pnpm --filter @workspace/screenshot-to-strength run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/screenshot-to-strength", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/screenshot-to-strength/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23459"
+BASE_PATH = "/"

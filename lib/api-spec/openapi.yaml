@@ -1,0 +1,220 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Screenshot to Strength API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: strength
+    description: Fitness screenshot analysis and strength plan generation
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /strength/analyze:
+    post:
+      operationId: analyzeFitnessScreenshot
+      tags: [strength]
+      summary: Extract activity metrics from a fitness screenshot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScreenshotInput"
+      responses:
+        "200":
+          description: Screenshot analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FitnessAnalysis"
+        "400":
+          description: Invalid or non-fitness image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Analysis failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /strength/plan:
+    post:
+      operationId: generateStrengthPlan
+      tags: [strength]
+      summary: Generate a complementary strength plan and recovery recipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlanInput"
+      responses:
+        "200":
+          description: Generated program
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StrengthProgram"
+        "400":
+          description: Invalid plan details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Plan generation failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    ScreenshotInput:
+      type: object
+      properties:
+        imageData:
+          type: string
+          minLength: 20
+          description: Base64 data URL for a JPEG, PNG, or WebP image
+      required: [imageData]
+    FitnessMetric:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+        confidence:
+          type: string
+          enum: [high, low]
+      required: [label, value, confidence]
+    FitnessAnalysis:
+      type: object
+      properties:
+        sourceApp:
+          type: string
+        metrics:
+          type: array
+          items:
+            $ref: "#/components/schemas/FitnessMetric"
+        gaps:
+          type: array
+          items:
+            type: string
+        bucket:
+          type: string
+      required: [sourceApp, metrics, gaps, bucket]
+    PlanInput:
+      type: object
+      properties:
+        metrics:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/FitnessMetric"
+        gaps:
+          type: array
+          items:
+            type: string
+        bucket:
+          type: string
+          minLength: 1
+        bodyweightKg:
+          type: ["number", "null"]
+          minimum: 25
+          maximum: 350
+        goal:
+          type: ["string", "null"]
+          enum: [general_fitness, build_strength, lose_weight, not_sure, null]
+      required: [metrics, gaps, bucket]
+    Exercise:
+      type: object
+      properties:
+        name:
+          type: string
+        sets:
+          type: string
+        reps:
+          type: string
+        coachingNote:
+          type: string
+      required: [name, sets, reps, coachingNote]
+    StrengthDay:
+      type: object
+      properties:
+        label:
+          type: string
+        focus:
+          type: string
+        exercises:
+          type: array
+          minItems: 4
+          maxItems: 6
+          items:
+            $ref: "#/components/schemas/Exercise"
+      required: [label, focus, exercises]
+    RecoveryRecipe:
+      type: object
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: array
+          minItems: 3
+          maxItems: 4
+          items:
+            type: string
+        howToMake:
+          type: string
+        whyItFits:
+          type: string
+      required: [name, ingredients, howToMake, whyItFits]
+    StrengthProgram:
+      type: object
+      properties:
+        summary:
+          type: string
+        recoveryRecipe:
+          $ref: "#/components/schemas/RecoveryRecipe"
+      required: [summary, recoveryRecipe]
