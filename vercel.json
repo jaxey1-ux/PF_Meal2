@@ -5,18 +5,23 @@
   "buildCommand": "pnpm --filter @workspace/api-spec run codegen && PORT=4173 BASE_PATH=/ pnpm --filter @workspace/screenshot-to-strength run build",
   "outputDirectory": "artifacts/screenshot-to-strength/dist/public",
   "functions": {
-    "api/[...path].ts": {
+    "api/healthz.ts": {
+      "maxDuration": 10
+    },
+    "api/strength/analyze.ts": {
+      "maxDuration": 60
+    },
+    "api/strength/plan.ts": {
       "maxDuration": 60
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "handle": "filesystem"
     },
     {
-      "source": "/:path*",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
